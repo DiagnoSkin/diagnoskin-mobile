@@ -1,0 +1,38 @@
+@import "../node_modules/nord/src/sass/nord.scss";
+Label {
+    color: $nord3;
+    margin-top: 10;
+    margin-bottom: 10;
+    font-size: 18;
+    &.title {
+        font-size: 40;
+        font-weight: 700;
+    }
+}
+Button {
+    border-radius: 10;
+    height: 40;
+    font-size: 18;
+    margin-top: 10;
+    margin-bottom: 10;
+}
+TextField {
+    font-size: 18;
+    color: $nord3;
+    border-bottom-color: $nord5;
+    border-bottom-width: 2;
+    margin-top: 10;
+    margin-bottom: 30;
+    padding-left: 5;
+    padding-right: 5;
+}
+.button-solid {
+    background: $nord8;
+    border: 1 solid $nord8;
+    color: $nord1;
+}
+.button-outline {
+    border-width: 1;
+    border-color: $nord1;
+    color: $nord1;
+}
