@@ -1,11 +1,11 @@
 {
-  "name": "spotter",
+  "name": "diagnoskin",
   "version": "0.0.0",
-  "description": "Mhealth system for skin lesions recogniction",
-  "author": "Bartlomiej Szal <bartlomiej.szal@gmail.com>",
-  "license": "MIT",
+  "description": "Mhealth system for skin lesions diagnosis",
+  "author": "DiagnoSkin <diagnoskinofficial@gmail.com>",
+  "license": "Apache-2.0",
   "nativescript": {
-    "id": "org.bartlomiej.szal.spotter",
+    "id": "io.diagnoskin.diagnoskin",
     "templateVersion": "v2",
     "tns-android": {
       "version": "6.0.0"

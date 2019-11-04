@@ -41,7 +41,24 @@ export default new Vuex.Store({
       }
     },
     async loginWithGoogle(context, payload: Credential) {
-
+      
+    },
+    async loginUserAnon(context) {
+      const firebaseLoginOptions = {
+        type: firebase.LoginType.ANONYMOUS
+      } as LoginOptions;
+      const response = await firebase.login(firebaseLoginOptions);
+      if (response) {
+        context.commit('SET_USER', {
+          uid: response.uid,
+          email: response.email,
+          name: response.displayName
+        } as User);
+        context.commit('SET_LOGGED_IN', true);
+      }
+      else {
+        context.commit('SET_LOGGED_IN', false);
+      }
     },
     async signUpEmailPassword(context, payload: CreateUserOptions) {
       const response = await firebase.createUser(payload)

@@ -1,0 +1,13 @@
+# JetBrains project files
+.idea
+
+# NPM
+node_modules
+
+# NativeScript application
+hooks
+platforms
+
+# Sensitive data
+app/App_Resources/iOS/GoogleService-Info.plist
+app/App_Resources/iOS/build.xcconfig
