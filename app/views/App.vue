@@ -12,10 +12,9 @@
               <Label text="Photos"></Label>
             </TabStripItem>
           </TabStrip>
-
           <TabContentItem>
             <StackLayout>
-              <Label text="Observations"></Label>
+              <ObservationsHeader/>
             </StackLayout>
           </TabContentItem>
           <TabContentItem>
@@ -34,8 +33,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import ObservationsHeader from '~/components/ObservationsHeader.vue';
 
 export default Vue.extend({
+  components: {
+    ObservationsHeader
+  },
   data() {
     return {
     }
