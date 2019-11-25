@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { User, Credential } from './model';
-import firebase, { LoginOptions, CreateUserOptions } from 'nativescript-plugin-firebase';
+import { User } from 'nativescript-plugin-firebase';
 
 Vue.use(Vuex);
 
@@ -11,76 +10,23 @@ export default new Vuex.Store({
     user: {} as User,
   },
   mutations: {
-    SET_USER(state, payload: User) {
-      state.user = payload
+    SET_LOGGED_OUT(state) {
+      state.user = null
+      state.loggedIn = false
     },
-    SET_LOGGED_IN(state, payload: boolean) {
-      state.loggedIn = payload;
-    }
+    SET_LOGGED_IN(state, user) {
+      state.user = user
+      state.loggedIn = true
+    },
   },
   actions: {
-    async loginUserEmailPassword(context, payload: Credential) {
-      const firebaseLoginOptions = {
-        type: firebase.LoginType.PASSWORD,
-        passwordOptions: {
-          email: payload.email,
-          password: payload.password
-        },
-      } as LoginOptions;
-      const response = await firebase.login(firebaseLoginOptions);
-      if (response) {
-        context.commit('SET_USER', {
-          uid: response.uid,
-          email: response.email,
-          name: response.displayName
-        } as User);
-        context.commit('SET_LOGGED_IN', true);
-      }
-      else {
-        context.commit('SET_LOGGED_IN', false);
-      }
-    },
-    async loginWithGoogle(context, payload: Credential) {
-      
-    },
-    async loginUserAnon(context) {
-      const firebaseLoginOptions = {
-        type: firebase.LoginType.ANONYMOUS
-      } as LoginOptions;
-      const response = await firebase.login(firebaseLoginOptions);
-      if (response) {
-        context.commit('SET_USER', {
-          uid: response.uid,
-          email: response.email,
-          name: response.displayName
-        } as User);
-        context.commit('SET_LOGGED_IN', true);
-      }
-      else {
-        context.commit('SET_LOGGED_IN', false);
-      }
-    },
-    async signUpEmailPassword(context, payload: CreateUserOptions) {
-      const response = await firebase.createUser(payload)
-      if (response) {
-        context.commit('SET_USER', {
-          uid: response.uid,
-          email: response.email,
-          name: response.displayName
-        } as User);
-        context.commit('SET_LOGGED_IN', true);
-      }
-      else {
-        context.commit('SET_LOGGED_IN', false);
-      }
-    }
   },
   getters: {
     getUser(state) {
-      return state.user;
+      return state.user
     },
     getLoggedIn(state) {
-      return state.loggedIn;
+      return state.loggedIn
     }
   }
 });

@@ -1,5 +1,5 @@
 import Vue from 'nativescript-vue';
-import Login from './views/Login.vue';
+import Login from '@/views/Login.vue';
 import firebase from 'nativescript-plugin-firebase';
 import store from './store';
 
