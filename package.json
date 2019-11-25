@@ -15,7 +15,9 @@
     }
   },
   "dependencies": {
+    "nativescript-iqkeyboardmanager": "^1.5.1",
     "nativescript-plugin-firebase": "^10.1.0",
+    "nativescript-theme-core": "^2.0.24",
     "nativescript-vue": "^2.4.0",
     "nord": "^0.2.1",
     "tns-core-modules": "^6.0.0",

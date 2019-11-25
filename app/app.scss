@@ -15,6 +15,25 @@ Button {
     font-size: 18;
     margin-top: 10;
     margin-bottom: 10;
+    &.button-solid {
+        background: $nord8;
+        border: 1 solid $nord8;
+        color: $nord1;
+        &.important {
+            background: $nord12;
+        }
+        &.accent {
+            background: $nord15;
+        }
+    }
+    &.button-outline {
+        border-width: 1;
+        border-color: $nord1;
+        color: $nord1;
+    }
+    &.button-grey {
+        color: #8794AE;
+    }
 }
 TextField {
     font-size: 18;
@@ -22,17 +41,11 @@ TextField {
     border-bottom-color: $nord5;
     border-bottom-width: 2;
     margin-top: 10;
-    margin-bottom: 30;
+    margin-bottom: 10;
     padding-left: 5;
     padding-right: 5;
+    placeholder-color: #BAC3D4
 }
-.button-solid {
-    background: $nord8;
-    border: 1 solid $nord8;
-    color: $nord1;
-}
-.button-outline {
-    border-width: 1;
-    border-color: $nord1;
-    color: $nord1;
+.error {
+    color: $nord12;
 }
