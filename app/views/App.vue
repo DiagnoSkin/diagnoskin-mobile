@@ -38,9 +38,6 @@ import { mapState } from 'vuex';
 import ObservationsHeader from '~/components/ObservationsHeader.vue';
 
 export default Vue.extend({
-  components: {
-    ObservationsHeader
-  },
   data() {
     return {
       
@@ -50,7 +47,8 @@ export default Vue.extend({
     ...mapState(['loginCount'])
   },
   components: {
-    "Profile": Profile
+    Profile,
+    ObservationsHeader
   }
 });
 </script>
