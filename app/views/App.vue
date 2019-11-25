@@ -12,10 +12,9 @@
               <Label text="Photos"></Label>
             </TabStripItem>
           </TabStrip>
-
           <TabContentItem>
             <StackLayout>
-              <Label v-bind:text="loginCount"></Label>
+              <ObservationsHeader/>
             </StackLayout>
           </TabContentItem>
           <TabContentItem>
@@ -36,8 +35,12 @@
 import Vue from 'vue';
 import Profile from '@/components/Profile.vue'
 import { mapState } from 'vuex';
+import ObservationsHeader from '~/components/ObservationsHeader.vue';
 
 export default Vue.extend({
+  components: {
+    ObservationsHeader
+  },
   data() {
     return {
       
