@@ -15,12 +15,12 @@
 
           <TabContentItem>
             <StackLayout>
-              <Label text="Observations"></Label>
+              <Label v-bind:text="loginCount"></Label>
             </StackLayout>
           </TabContentItem>
           <TabContentItem>
             <StackLayout>
-              <Label text="Profile"></Label>
+              <Profile></Profile>
             </StackLayout>
           </TabContentItem>
           <TabContentItem>
@@ -34,11 +34,20 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import Profile from '@/components/Profile.vue'
+import { mapState } from 'vuex';
 
 export default Vue.extend({
   data() {
     return {
+      
     }
+  },
+  computed: {
+    ...mapState(['loginCount'])
+  },
+  components: {
+    "Profile": Profile
   }
 });
 </script>
