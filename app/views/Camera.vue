@@ -1,16 +1,81 @@
 <template>
     <Page enableSwipeBackNavigation="true">
-        <ScrollView>
-            <StackLayout class="wrapper" >
-                <ListPicker :items="sapcesList" v-model="selectedSpace" />
+        <!-- <TabView >
+          <TabViewItem title="Location">
+            <StackLayout verticalAlignment="center">
+                <Label horizontalAlignment="center" >Please Select Bodypart</Label>
+                <BodyPartSelector class="xdxd"  horizontalAlignment="center"/>
+            </StackLayout>
+          </TabViewItem>
+          <TabViewItem class="color" title="Photo">
+            <StackLayout verticalAlignment="center">
                 <FlexboxLayout justifyContent="space-between">
                     <Button class="button-solid" @tap="takePhoto">Take photo</Button>
                     <Button class="button-solid" textWrap=true @tap="openGalery">Select photo from gallery</Button>
                 </FlexboxLayout>
-                <Image :src="image.src ? image.src : '~/assets/camera/dummyImage.png'"/>
-                <Button class="button-solid" v-if="image.src" @tap="sendPhoto">Send Photo</Button>
+                <Image :src="pictureSource ? pictureSource : '~/assets/camera/dummyImage.png'"/>
             </StackLayout>
-        </ScrollView>
+          </TabViewItem>
+          <TabViewItem title="Aditional Info">
+            <StackLayout>
+                <Label text="This is Label in Tab 2" />
+                <Button class="button-solid" v-if="pictureSource" @tap="sendPhoto">Send Photo</Button>
+            </StackLayout>
+          </TabViewItem>
+        </TabView> -->
+
+
+
+
+        <BottomNavigation>
+          <TabStrip>
+            <TabStripItem>
+              <Label text="Location"></Label>
+            </TabStripItem>
+            <TabStripItem>
+              <Label text="Photo"></Label>
+            </TabStripItem>
+            <TabStripItem>
+              <Label text="Info"></Label>
+            </TabStripItem>
+          </TabStrip>
+          <TabContentItem>
+            <StackLayout verticalAlignment="center">
+                <Label horizontalAlignment="center" >Please Select Bodypart</Label>
+                <BodyPartSelector @selectionChange="changeSelection" class="xdxd"  horizontalAlignment="center"/>
+            </StackLayout>
+          </TabContentItem>
+          <TabContentItem>
+            <StackLayout verticalAlignment="center">
+                <FlexboxLayout justifyContent="space-between">
+                    <Button class="button-solid" @tap="takePhoto">Take photo</Button>
+                    <Button class="button-solid" textWrap=true @tap="openGalery">Select photo from gallery</Button>
+                </FlexboxLayout>
+                <Image :src="pictureSource ? pictureSource : '~/assets/camera/dummyImage.png'"/>
+            </StackLayout>
+          </TabContentItem>
+          <TabContentItem>
+            <StackLayout>
+                <TextField hint="Provide additional info"/>
+                <FlexboxLayout justifyContent="center">
+                    <Label text="notification" textWrap="true" />
+                    <Switch  />
+                </FlexboxLayout>
+                
+                
+                
+                <Button class="button-solid" v-if="pictureSource" @tap="sendPhoto">Send Photo</Button>
+
+            </StackLayout>
+          </TabContentItem>
+        </BottomNavigation>
+        
+        <!-- <ScrollView>
+            <StackLayout class="wrapper" >
+                
+                
+            </StackLayout>
+        </ScrollView> -->
         
     </Page>
 </template>
@@ -18,22 +83,51 @@
     import * as camera from "nativescript-camera";
     import * as imagepicker from "nativescript-imagepicker";
     import { Image } from "tns-core-modules/ui/image";
+    import BodyPartSelector from '@/components/BodyPartSelector.vue'
+    import Vue from 'vue';
+    import App from '@/views/App.vue';
+    const imageSourceModule = require("tns-core-modules/image-source");
+    import { path, knownFolders } from "tns-core-modules/file-system";
+
     export default {
         name: 'Camera',
+        components: {
+            BodyPartSelector
+        },
         data() {
             return {
                 image: {} as Image,
-                sapcesList: ['arm', 'head', 'leg', 'shoulder', 'forearm', 'hand'] as String[],
-                selectedSpace: ''             
+                selectedSpace: '',
+                pictureSource : '',
+                newFilename : '',
+                bodyPart: '',
+                locationButton: 'notYet',
+                photoButton: 'notYet',
+                infoButton: 'notYet'       
             }
         },
+       
         methods: {
+
             takePhoto() {
                 camera.takePicture({ width: 200, height: 200, keepAspectRatio: true, saveToGallery: false})
                     .then( imageAsset => {
-                        let image = new Image();
-                        image.src = imageAsset;
-                        this.image = image;
+                        this.pictureSource = '1';
+                        imageSourceModule.fromAsset(imageAsset).then(
+                            savedImage => {
+                                console.log("saving to file");
+                                let filename ="xdddd.jpg";
+                                let folder = knownFolders.documents();
+                                let fullpath = path.join(folder.path, filename);
+                                savedImage.saveToFile(fullpath, "jpeg");
+                                this.pictureSource = fullpath;
+                                // this.pictureSource = 'xdxd';
+                                this.newFilename = filename;
+                            }
+                        )
+                        // let image = new Image();
+                        // image.src = imageAsset;
+                        // this.image = image;
                     })
                     .catch(err => {
                         console.log("Error -> " + err.message);
@@ -52,28 +146,59 @@
                         console.log("Error -> " + err.message);                    
                     });
             },
+            changeSelection(name){
+                this.bodyPart = name;
+            },
             sendPhoto() {
                 //TODO 
+
                 confirm('Are you sure you want to submit this form?')
                     .then(result => {
-                        console.log(result);
+                        this.$store.dispatch('saveImage', {src: this.pictureSource, part: this.bodyPart});
+                        console.log('%c Oh my heavens! ', 'background: #222; color: #bada55');
                     });
             }
         },
     }
 </script>
 <style lang="scss" scoped>
-    Button{
+    Button, .button-solid{
         width: 45%;
-        margin: 0px 60px 100px;
-        height: 200px;
-    }
-    ListPicker{
-        height: 400px
+        margin: 10 20;
+        height: 50;
+        text-align: center;
     }
     Image{
         // height: 1400px;
-        margin: 0 60px 100px;
+        // margin: 0 10 100;
+        width: 100%
+    }
+    .xdxd{
+        // margin: 0 0;
+        // margin-left: 80;
+        // margin-top: 20;
+        // margin-bottom: 20;
+        // height: 300;
+        // width: 100%;
+        // height: 500;
+        margin-top: 30;
+    }
+    Label{
+        margin-top: 20;
+        text-align: center;
+        // color: red;
+    }
+    .color{
+        background-color: blue;
+    }
+    .notSelected{
+        // color: red;
+    }
+    .selected{
+        color: green
+    }
+    TextField{
+        height: 100
     }
     
 </style>

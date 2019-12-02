@@ -15,6 +15,7 @@
           <TabContentItem>
             <StackLayout>
               <ObservationsHeader/>
+              <ObservationList/>
             </StackLayout>
           </TabContentItem>
           <TabContentItem>
@@ -34,10 +35,12 @@
 <script lang="ts">
 import Vue from 'vue';
 import ObservationsHeader from '~/components/ObservationsHeader.vue';
+import ObservationList from '~/components/ObservationList.vue';
 
 export default Vue.extend({
   components: {
-    ObservationsHeader
+    ObservationsHeader,
+    ObservationList
   },
   data() {
     return {

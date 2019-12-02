@@ -1,6 +1,6 @@
 <template>
     <FlexboxLayout justifyContent="space-between" alignItems="center">
-        <Label class="margin titleLable" text="Observations"></Label>
+        <Label class="margin titleLable" >Observations</Label>
         <Button class="margin addButton" @tap="navigateToCameraView"/>
     </FlexboxLayout>
 </template>
@@ -15,6 +15,11 @@
         return {
         }
       },
+      computed: {
+        uid() {
+          return this.$store.getters.getUser.uid
+        }
+      },
       methods: {
           navigateToCameraView() {
               this.$navigateTo(Camera)
@@ -25,15 +30,17 @@
 
 <style lang="scss" scoped>
 .margin{
-  margin: 50px;
+  // margin: 10;
+  margin: 0 10;
 }
 .addButton{
   background-image: url('~/assets/navigation/addButton.png');
   background-repeat: no-repeat;
   background-position: center center;
   background-size: contain;
-  height: 150px;
-  width: 150px;
+  height: 40;
+  width: 40;
+  
 }
 .titleLable{
   font-size: 30;

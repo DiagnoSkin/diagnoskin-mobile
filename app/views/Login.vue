@@ -34,6 +34,7 @@ export default Vue.extend({
             } as Credential;
             await this.$store.dispatch('loginUserEmailPassword', credential);
             if (this.$store.getters.getLoggedIn) {
+                this.$store.dispatch('getObservationCollerction')
                 this.navigateToAppView();    
             }
         },
