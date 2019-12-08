@@ -1,32 +1,5 @@
 <template>
     <Page enableSwipeBackNavigation="true">
-        <!-- <TabView >
-          <TabViewItem title="Location">
-            <StackLayout verticalAlignment="center">
-                <Label horizontalAlignment="center" >Please Select Bodypart</Label>
-                <BodyPartSelector class="xdxd"  horizontalAlignment="center"/>
-            </StackLayout>
-          </TabViewItem>
-          <TabViewItem class="color" title="Photo">
-            <StackLayout verticalAlignment="center">
-                <FlexboxLayout justifyContent="space-between">
-                    <Button class="button-solid" @tap="takePhoto">Take photo</Button>
-                    <Button class="button-solid" textWrap=true @tap="openGalery">Select photo from gallery</Button>
-                </FlexboxLayout>
-                <Image :src="pictureSource ? pictureSource : '~/assets/camera/dummyImage.png'"/>
-            </StackLayout>
-          </TabViewItem>
-          <TabViewItem title="Aditional Info">
-            <StackLayout>
-                <Label text="This is Label in Tab 2" />
-                <Button class="button-solid" v-if="pictureSource" @tap="sendPhoto">Send Photo</Button>
-            </StackLayout>
-          </TabViewItem>
-        </TabView> -->
-
-
-
-
         <BottomNavigation>
           <TabStrip>
             <TabStripItem>
@@ -42,9 +15,9 @@
           <TabContentItem>
             <StackLayout verticalAlignment="center">
                 <Label horizontalAlignment="center" >Please Select Bodypart</Label>
-                <SegmentedBar class="wrapper">
-                    <SegmentedBarItem title="Front" />
-                    <SegmentedBarItem title="Back" />
+                    <SegmentedBar class="wrapper">
+                        <SegmentedBarItem title="Front" />
+                        <SegmentedBarItem title="Back" />
                     </SegmentedBar>
                 <BodyPartSelector @selectionChange="changeSelection" class="xdxd"  horizontalAlignment="center"/>
             </StackLayout>
@@ -64,28 +37,16 @@
                     <Label class="bodyPartSum" >Location : {{getName(bodyPart)}}</Label>
                     <Image class="small bodyPartSum" :src="pictureSource ? pictureSource : '~/assets/camera/dummyImage.png'"/>
                 </FlexboxLayout>
-                <TextField hint="Provide additional info"/>
-                <TextField hint="Provide name"/>
+                <TextField v-model="addidtionalInfo" hint="Provide additional info"/>
+                <TextField v-model="nameText" hint="Provide name"/>
                 <FlexboxLayout justifyContent="center">
                     <Label text="notification" textWrap="true" />
                     <Switch  />
                 </FlexboxLayout>
-                
-                
-                
                 <Button class="button-solid" :enable="pictureSource" @tap="sendPhoto">Send Photo</Button>
-
             </StackLayout>
           </TabContentItem>
         </BottomNavigation>
-        
-        <!-- <ScrollView>
-            <StackLayout class="wrapper" >
-                
-                
-            </StackLayout>
-        </ScrollView> -->
-        
     </Page>
 </template>
 <script lang="ts">
@@ -106,6 +67,8 @@
         data() {
             return {
                 image: {} as Image,
+                nameText : '',
+                addidtionalInfo: '',
                 selectedSpace: '',
                 pictureSource : '',
                 newFilename : '',
@@ -121,7 +84,6 @@
             takePhoto() {
                 camera.takePicture({ width: 200, height: 200, keepAspectRatio: true, saveToGallery: false})
                     .then( imageAsset => {
-                        this.pictureSource = '1';
                         imageSourceModule.fromAsset(imageAsset).then(
                             savedImage => {
                                 console.log("saving to file");
@@ -130,13 +92,9 @@
                                 let fullpath = path.join(folder.path, filename);
                                 savedImage.saveToFile(fullpath, "jpeg");
                                 this.pictureSource = fullpath;
-                                // this.pictureSource = 'xdxd';
                                 this.newFilename = filename;
                             }
                         )
-                        // let image = new Image();
-                        // image.src = imageAsset;
-                        // this.image = image;
                     })
                     .catch(err => {
                         console.log("Error -> " + err.message);
@@ -182,9 +140,7 @@
                     confirm('Are you sure you want to submit this form?')
                     .then(result => {
                         console.log(result)
-                            this.$store.dispatch('saveImage', {src: this.pictureSource, part: this.bodyPart});
-                            console.log('%c Oh my heavens! ', 'background: #222; color: #bada55');
-                        
+                            this.$store.dispatch('saveImage', {src: this.pictureSource, part: this.bodyPart, name:this.nameText, info: this.addidtionalInfo, side: 'front'});                        
                     });
                 }
                 else {

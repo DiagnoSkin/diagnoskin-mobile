@@ -36,7 +36,9 @@ export default new Vuex.Store({
         {
           'date': Date.now(),
           'location': payload.part,
-          'nickname': 'xdxd',
+          'nickname': payload.name,
+          'side' : payload.side,
+          'info': payload.info,
           'photoPath': ``
         }
       )
