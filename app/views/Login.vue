@@ -31,6 +31,7 @@ export default Vue.extend({
             let user = await firebase.getCurrentUser()
             if (user !== null) {
                 this.$store.commit('SET_LOGGED_IN', user)
+                this.$store.dispatch('getObservationCollerction')
                 this.$navigateTo(App, { clearHistory: true })
             }
         } catch(error) { }
@@ -91,6 +92,7 @@ export default Vue.extend({
                 .then((user) => {
                     if (user) {
                         this.$store.commit('SET_LOGGED_IN', user)
+                        this.$store.dispatch('getObservationCollerction')
                         this.$navigateTo(App, { clearHistory: true })
                     }
                 })

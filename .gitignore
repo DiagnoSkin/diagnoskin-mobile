@@ -11,3 +11,6 @@ platforms
 # Sensitive data
 app/App_Resources/iOS/GoogleService-Info.plist
 app/App_Resources/iOS/build.xcconfig
+
+#DS_Store
+.DS_Store
