@@ -10,14 +10,26 @@ export default new Vuex.Store({
   state: {
     loggedIn: false,
     user: {} as User,
-    observations: []
+    observations: [],
+    observationPhotos: [],
+    observationId: ''
+    
   },
   mutations: {
     ADD_OBSERVATION(state, payload){
       state.observations.push(payload)
     },
+    ADD_OBSERVATION_PHOTO(state, payload){
+      state.observationPhotos.push(payload)
+    },
     CLEAR_OBSERVATIONS(state, payload){
       state.observations = []
+    },
+    CLEAR_OBSERVATION_PHOTO(state, payload){
+      state.observationPhotos = []
+    },
+    SET_OSERVATION_ID(state, payload){
+      state.observationId = payload;
     },
     SET_LOGGED_OUT(state) {
       state.user = null
@@ -30,22 +42,22 @@ export default new Vuex.Store({
   },
   actions: {
     saveImage({commit, state}, payload){
-      let db = firebase.firestore
+      let nameDate = Date.now(),
+        db = firebase.firestore;
       db.collection("users").doc(state.user.uid).collection("observations")
       .add(
         {
-          'date': Date.now(),
+          'date': nameDate,
           'location': payload.part,
           'nickname': payload.name,
           'side' : payload.side,
           'info': payload.info,
           'photoPath': ``
         }
-      )
-      .then(result => {
+      ).then(result => {
         firebase.storage
         .uploadFile({
-          remoteFullPath: `/${state.user.uid}/${result.id}/z1.jpg`,
+          remoteFullPath: `/${state.user.uid}/${result.id}/${nameDate}`,
           localFullPath: payload.src,
           onProgress: function(status) {
             console.log("Uploaded fraction: " + status.fractionCompleted);
@@ -53,7 +65,34 @@ export default new Vuex.Store({
           }
         })
         .then(a => {
-          alert('Form uploaded!')
+          db.collection("users").doc(state.user.uid).collection("observations").doc(result.id).collection("photos").add(
+            {
+              'photoPath' : `/${state.user.uid}/${result.id}/${nameDate}.jpg`
+            }
+          ).then(r => {
+            alert('Form uploaded!')
+          })
+          
+        })
+      })
+    },
+    saveAdditionalImage({commit, state}, payload){
+      let nameDate = Date.now(),
+        db = firebase.firestore;
+      db.collection("users").doc(state.user.uid).collection("observations").doc(state.observationId).collection('photos')
+      .add(
+        {
+          'photoPath': `/${state.user.uid}/${state.observationId}/${nameDate}`
+        }
+      ).then(result => {
+        firebase.storage
+        .uploadFile({
+          remoteFullPath: `/${state.user.uid}/${state.observationId}/${nameDate}`,
+          localFullPath: payload.src,
+          onProgress: function(status) {
+            console.log("Uploaded fraction: " + status.fractionCompleted);
+            console.log("Percentage complete: " + status.percentageCompleted);
+          }
         })
       })
     },
@@ -65,7 +104,9 @@ export default new Vuex.Store({
           snapshot.docChanges().forEach(function(change) {
               if (change.type === "added") {
                   console.log("New city gggg: ", change.doc.data());
+                  console.log("xddddddddddddddddddddd",change.doc.id)
                   let newObj = {
+                    id: change.doc.id,
                     date: change.doc.data().date,
                     part: change.doc.data().location
                   }
@@ -79,17 +120,53 @@ export default new Vuex.Store({
               }
           });
         });
+    },
+    async getObservationPhotos({commit, state}){
+      commit('CLEAR_OBSERVATION_PHOTO')
+      let db = firebase.firestore;
+      const  q = await db.collection("users").doc(state.user.uid).collection("observations").doc(state.observationId).collection('photos').get()
+      
+      for(let index = 0; index < q.docs.length; index++){
+        let path = q.docs[index].data().photoPath;
+        let downloadedFile = await firebase.storage.getDownloadUrl({
+          bucket: 'gs://diagnoskin-48e89.appspot.com/',
+          remoteFullPath: path
+        })
+        commit('ADD_OBSERVATION_PHOTO', downloadedFile)
+      }
+      // q.docs.forEach(doc => {
+      //   let path = doc.data().photoPath;
+      //   console.log(path, '---------------------------------------------')
+      //   let downloadedFile = firebase.storage.getDownloadUrl({
+      //     bucket: 'gs://diagnoskin-48e89.appspot.com/',
+      //     remoteFullPath: path
+      //   }).then(downloadedFile => {
+      //     // alert('xd')
+      //     console.log(downloadedFile)
+      //     commit('ADD_OBSERVATION_PHOTO', {downloadedFile})
+      //   }
+      //   )
+      // })
+    },
+    setObservationId ({commit, state}, payload) {
+      commit('SET_OSERVATION_ID', payload.observation)
     }
   },
   getters: {
     getUser(state) {
       return state.user
     },
+    getObservationId(state){
+      return state.observationId
+    },
     getLoggedIn(state) {
       return state.loggedIn
     },
     getObservations(state) {
       return state.observations;
+    },
+    getObservationPhotos(state) {
+      return state.observationPhotos;
     }
   }
 });

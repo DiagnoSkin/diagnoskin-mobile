@@ -1,9 +1,7 @@
 <template>
     <StackLayout>
-        <!-- <Button @tap="updateList">{{buttonText}}</Button> -->
         <ListView for="observation in observations" @itemTap="onItemTap">
             <v-template>
-                <!-- Shows the list item label in the default color and style. -->
                 <FlexboxLayout alignContent="center" class="observationItem">
                     <BodyPartIndicator :selected="observation.part" alignSelf="center"/>
                     <FlexboxLayout class="observationItemDesc" flexDirection="column" >
@@ -20,7 +18,7 @@
 <script lang="ts">
 // import Observation from '@/components/Observation.vue'
 import BodyPartIndicator from '@/components/bodypartIndicator/BodyPartIndictor.vue'
-// import Observation from '@/views/Observation.vue';
+import Observation from '@/views/Observation.vue';
 export default {
     name: 'ObservationList',
     components: {
@@ -46,9 +44,9 @@ export default {
     methods: {
         getDate(data){
             let date = new Date(data),
-            month = date.getMonth() + 1,
-            day = date.getDate(),
-            year = date.getFullYear();
+                month = date.getMonth() + 1,
+                day = date.getDate(),
+                year = date.getFullYear();
             if(month < 10) month = '0' + month;
             if(day < 10) day = '0' + day;
             return `${day}.${month}.${year}`
@@ -73,10 +71,12 @@ export default {
 
         },
         onItemTap(event) {
+            this.$store.dispatch('setObservationId', {observation: event.item.id})
+
             // console.log(event.index)
             // console.log(event.item)
-            alert(event.item.part)
-            // this.$navigateTo(Observation)
+            // alert(event.item.part)
+            this.$navigateTo(Observation)
         },
         updateList(){
             this.observations = this.$store.getters.getObservations;
