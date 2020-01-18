@@ -36,7 +36,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import Profile from '@/components/Profile.vue'
-import { mapState } from 'vuex';
 import ObservationsHeader from '~/components/ObservationsHeader.vue';
 import ObservationList from '~/components/ObservationList.vue';
 
@@ -46,9 +45,6 @@ export default Vue.extend({
     return {
       
     }
-  },
-  computed: {
-    ...mapState(['loginCount'])
   },
   components: {
     Profile,
