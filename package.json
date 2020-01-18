@@ -9,13 +9,11 @@
     "templateVersion": "v2",
     "tns-android": {
       "version": "6.0.0"
-    },
-    "tns-ios": {
-      "version": "6.1.1"
     }
   },
   "dependencies": {
     "nativescript-iqkeyboardmanager": "^1.5.1",
+    "axios": "^0.19.1",
     "nativescript-camera": "^4.5.0",
     "nativescript-imagepicker": "^7.1.0",
     "nativescript-plugin-firebase": "^10.1.0",
