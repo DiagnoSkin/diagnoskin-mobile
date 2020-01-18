@@ -8,8 +8,8 @@
 import Vue from 'vue'
 import Login from '@/views/Login.vue'
 import firebase from 'nativescript-plugin-firebase'
-
 import { NavigationEntry } from 'tns-core-modules/ui/frame/frame'
+
 export default Vue.extend({
     name: 'Profile',
     methods: {
@@ -24,7 +24,4 @@ export default Vue.extend({
 })
 </script>
 <style lang="scss" scoped>
-.wrapper {
-    width: 90%;
-}
 </style>

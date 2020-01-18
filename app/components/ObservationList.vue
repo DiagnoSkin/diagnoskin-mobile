@@ -17,7 +17,6 @@
 
 <script lang="ts">
 // import Observation from '@/components/Observation.vue'
-import test from '@/diagnose_request.ts'
 import BodyPartIndicator from '@/components/bodypartIndicator/BodyPartIndictor.vue'
 import Observation from '@/views/Observation.vue';
 export default {
@@ -48,9 +47,7 @@ export default {
                 month = date.getMonth() + 1,
                 day = date.getDate(),
                 year = date.getFullYear();
-            if(month < 10) month = '0' + month;
-            if(day < 10) day = '0' + day;
-            return `${day}.${month}.${year}`
+            return `${day < 10 ? '0' + day: day}.${month < 10 ? '0' + month:month}.${year}`
 
         },
         getName(key){
@@ -60,9 +57,9 @@ export default {
             firstUpper = array.findIndex(x => x === x.toUpperCase());
             array[0] = array[0].toUpperCase();
             if(firstUpper !== -1){
-                array = array.join('');
-                let firstPart = array.substr(0, firstUpper),
-                secondPart = array.substr(firstUpper)
+                let arrayString = array.join('');
+                let firstPart = arrayString.substr(0, firstUpper),
+                secondPart = arrayString.substr(firstUpper)
                 result = `${firstPart} ${secondPart}`
             }
             else result = array.join('');
@@ -72,13 +69,8 @@ export default {
 
         },
         onItemTap(event) {
-            this.$store.dispatch('setCurrentObservation', {observation: event.item})
-
-            // // console.log(event.index)
-            // // console.log(event.item)
-            // // alert(event.item.part)
+            this.$store.dispatch('setObservationId', {observation: event.item.id})
             this.$navigateTo(Observation)
-            // test()
         },
         updateList(){
             this.observations = this.$store.getters.getObservations;

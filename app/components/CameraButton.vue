@@ -47,8 +47,6 @@
                     .then(result => {
                         console.log(result);
                         if(result === 'Aparat'){
-                                    // this.$showModal(Detail);
-
                             camera.takePicture({ width: 200, height: 200, keepAspectRatio: true, saveToGallery: false})
                                 .then( imageAsset => {
                                     imageSourceModule.fromAsset(imageAsset).then(

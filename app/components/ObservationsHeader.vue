@@ -1,7 +1,7 @@
 <template>
-    <FlexboxLayout justifyContent="space-between" alignItems="center">
-        <Label class="margin titleLable" text="Observations"></Label>
-        <Button class="margin addButton" @tap="navigateToCameraView"/>
+    <FlexboxLayout class="wrapper">
+        <Label class="title" text="Observations"></Label>
+        <Button class="addButton" @tap="navigateToCameraView"/>
     </FlexboxLayout>
 </template>
 
@@ -24,19 +24,20 @@
 </script>
 
 <style lang="scss" scoped>
-.margin{
-  margin: 50px;
+.title {
+  width: 75%;
 }
 .addButton{
   background-image: url('~/assets/navigation/addButton.png');
   background-repeat: no-repeat;
   background-position: center center;
   background-size: contain;
-  height: 150px;
-  width: 150px;
+  width: 25%;
 }
-.titleLable{
-  font-size: 30;
-  font-weight: 700;
+Label {
+  margin: none;
+}
+Button {
+  margin: none;
 }
 </style>

@@ -147,10 +147,8 @@ export default Vue.extend({
 });
 </script>
 <style lang="scss" scoped>
-.wrapper {
-    width: 90%;
-}
 .title {
+    font-size: 35;
     margin-top: 50;
 }
 #google-login-button {
