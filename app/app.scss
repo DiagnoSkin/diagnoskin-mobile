@@ -1,11 +1,10 @@
 @import "../node_modules/nord/src/sass/nord.scss";
 Label {
-    color: $nord3;
     margin-top: 10;
     margin-bottom: 10;
     font-size: 18;
     &.title {
-        font-size: 40;
+        font-size: 30;
         font-weight: 700;
     }
 }
@@ -15,37 +14,89 @@ Button {
     font-size: 18;
     margin-top: 10;
     margin-bottom: 10;
-    &.button-solid {
-        background: $nord8;
-        border: 1 solid $nord8;
-        color: $nord1;
-        &.important {
-            background: $nord12;
-        }
-        &.accent {
-            background: $nord15;
-        }
-    }
     &.button-outline {
         border-width: 1;
-        border-color: $nord1;
-        color: $nord1;
-    }
-    &.button-grey {
-        color: #8794AE;
     }
 }
 TextField {
     font-size: 18;
-    color: $nord3;
-    border-bottom-color: $nord5;
     border-bottom-width: 2;
     margin-top: 10;
     margin-bottom: 10;
     padding-left: 5;
     padding-right: 5;
-    placeholder-color: #BAC3D4
 }
 .error {
     color: $nord12;
+}
+
+.wrapper {
+    width: 90%;
+}
+
+.ns-light {
+    Label {
+        color: $nord3;
+    }
+    Button {
+        &.button-solid {
+            background: $nord8;
+            border: 1 solid $nord8;
+            color: $nord1;
+            &.important {
+                color: #ffffff;
+                background: $nord12;
+                border: 1 solid $nord12;
+            }
+            &.accent {
+                background: $nord15;
+                border: 1 solid $nord15;
+            }
+        }
+        &.button-outline {
+            border-color: $nord1;
+            color: $nord1;
+        }
+        &.button-grey {
+            color: #8794AE;
+        }
+    }
+    TextField {
+        color: $nord3;
+        border-bottom-color: $nord5;
+        placeholder-color: #BAC3D4
+    }
+}
+.ns-dark {
+    Label {
+        color: #ffffff;
+    }
+    Button {
+        &.button-solid {
+            background: $nord8;
+            border: 1 solid $nord8;
+            color: $nord0;
+            &.important {
+                color: #ffffff;
+                border: 1 solid $nord12;
+                background: $nord12;
+            }
+            &.accent {
+                border: 1 solid $nord15;
+                background: $nord15;
+            }
+        }
+        &.button-outline {
+            border-color: $nord3;
+            color: #ffffff;
+        }
+        &.button-grey {
+            color: $nord4;
+        }
+    }
+    TextField {
+        color: #ffffff;
+        border-bottom-color: $nord3;
+        placeholder-color: $nord3;
+    }
 }
