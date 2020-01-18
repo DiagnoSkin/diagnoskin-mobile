@@ -1,5 +1,5 @@
 <template>
-    <Button text="add" @tap="buttonClicked" />
+    <Button class="addButton margin" text="" @tap="buttonClicked" />
 </template>
 <script lang="ts">
     
@@ -79,5 +79,16 @@
 <style lang="scss" scoped>
     Image{
         height: 200;
+    }
+    .addButton{
+        background-image: url('~/assets/navigation/addButton.png');
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: contain;
+        height: 150px;
+        width: 150px;
+    }  
+    .margin{
+        margin: 50px;
     }
 </style>

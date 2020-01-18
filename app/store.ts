@@ -12,7 +12,7 @@ export default new Vuex.Store({
     user: {} as User,
     observations: [],
     observationPhotos: [],
-    observationId: ''
+    currentObservation: {}
     
   },
   mutations: {
@@ -28,8 +28,8 @@ export default new Vuex.Store({
     CLEAR_OBSERVATION_PHOTO(state, payload){
       state.observationPhotos = []
     },
-    SET_OSERVATION_ID(state, payload){
-      state.observationId = payload;
+    SET_CURRENT_OSERVATION(state, payload){
+      state.currentObservation = payload;
     },
     SET_LOGGED_OUT(state) {
       state.user = null
@@ -79,15 +79,15 @@ export default new Vuex.Store({
     saveAdditionalImage({commit, state}, payload){
       let nameDate = Date.now(),
         db = firebase.firestore;
-      db.collection("users").doc(state.user.uid).collection("observations").doc(state.observationId).collection('photos')
+      db.collection("users").doc(state.user.uid).collection("observations").doc(state.currentObservation.id).collection('photos')
       .add(
         {
-          'photoPath': `/${state.user.uid}/${state.observationId}/${nameDate}`
+          'photoPath': `/${state.user.uid}/${state.currentObservation.id}/${nameDate}`
         }
       ).then(result => {
         firebase.storage
         .uploadFile({
-          remoteFullPath: `/${state.user.uid}/${state.observationId}/${nameDate}`,
+          remoteFullPath: `/${state.user.uid}/${state.currentObservation.id}/${nameDate}`,
           localFullPath: payload.src,
           onProgress: function(status) {
             console.log("Uploaded fraction: " + status.fractionCompleted);
@@ -124,8 +124,7 @@ export default new Vuex.Store({
     async getObservationPhotos({commit, state}){
       commit('CLEAR_OBSERVATION_PHOTO')
       let db = firebase.firestore;
-      const  q = await db.collection("users").doc(state.user.uid).collection("observations").doc(state.observationId).collection('photos').get()
-      
+      const  q = await db.collection("users").doc(state.user.uid).collection("observations").doc(state.currentObservation.id).collection('photos').get()
       for(let index = 0; index < q.docs.length; index++){
         let path = q.docs[index].data().photoPath;
         let downloadedFile = await firebase.storage.getDownloadUrl({
@@ -148,16 +147,16 @@ export default new Vuex.Store({
       //   )
       // })
     },
-    setObservationId ({commit, state}, payload) {
-      commit('SET_OSERVATION_ID', payload.observation)
+    setCurrentObservation ({commit, state}, payload) {
+      commit('SET_CURRENT_OSERVATION', payload.observation)
     }
   },
   getters: {
     getUser(state) {
       return state.user
     },
-    getObservationId(state){
-      return state.observationId
+    getCurrentObservation(state){
+      return state.currentObservation
     },
     getLoggedIn(state) {
       return state.loggedIn

@@ -28,13 +28,19 @@
                     <Button class="button-solid" @tap="takePhoto">Take photo</Button>
                     <Button class="button-solid" textWrap=true @tap="openGalery">Select photo from gallery</Button>
                 </FlexboxLayout>
-                <Image :src="pictureSource ? pictureSource : '~/assets/camera/dummyImage.png'"/>
+                
+                <GridLayout rows="*" columns="*">
+                    <Image class="photo" :src="pictureSource ? pictureSource : '~/assets/camera/dummyImage.png'" row="0" col="0" />
+                    <AbsoluteLayout row="0" col="0" @pinch="larger">
+                      <Image v-if="pictureSource ? true : false" :style="getIndicatorSize"  src="~/assets/navigation/marker.png"  :top="x"   :left="y" @pan="move" />
+                    </AbsoluteLayout>
+                </GridLayout>
             </StackLayout>
           </TabContentItem>
           <TabContentItem>
             <StackLayout>
                 <FlexboxLayout justifyContent="space-between">
-                    <Label class="bodyPartSum" >Location : {{getName(bodyPart)}}</Label>
+                    <Label class="bodyPartSum">Location : {{getName(bodyPart)}}</Label>
                     <Image class="small bodyPartSum" :src="pictureSource ? pictureSource : '~/assets/camera/dummyImage.png'"/>
                 </FlexboxLayout>
                 <TextField v-model="addidtionalInfo" hint="Provide additional info"/>
@@ -66,6 +72,14 @@
         },
         data() {
             return {
+                x: 100,
+                y: 100,
+                lastX: 100,
+                lastY: 100,
+                scale: 1,
+                indicatorSize: 150,
+                lastIndicatorSize: 150,
+                lastScale: 1,
                 image: {} as Image,
                 nameText : '',
                 addidtionalInfo: '',
@@ -78,8 +92,56 @@
                 infoButton: 'notYet'       
             }
         },
-       
+        computed: {
+            getIndicatorSize: function () {
+                return {
+                    'height' : `${this.indicatorSize}`,
+                    'width' : `${this.indicatorSize}`
+                }
+            }
+        },
         methods: {
+            move(a) {
+                let x = Object.keys(a);
+                // alert(a.state)
+                
+                if(a.state === 3){
+                    // console.log("xdddddd")
+                    this.lastX = this.x;
+                    this.lastY = this.y;
+                }
+                else{
+                    if(this.lastX + a.deltaY > 0 && this.lastY + a.deltaX > 0){
+                        this.x = this.lastX + a.deltaY;
+                        this.y = this.lastY + a.deltaX;
+                    }
+                    
+                }
+                // console.log(this.x, this.y)
+
+                
+                
+            },
+            larger(a){
+                let last = this.indicatorSize;
+                this.indicatorSize = a.scale * this.lastIndicatorSize;
+                if(a.scale >= 1){
+                    this.x -= (this.indicatorSize - last) / 2;
+                    this.y -= (this.indicatorSize - last) / 2;
+                    
+                }
+                else if(a.scale < 1){
+                    this.x += (last - this.indicatorSize) / 2;
+                    this.y += (last - this.indicatorSize) / 2;
+                    
+                }
+                if(a.state === 3){
+                    this.lastIndicatorSize = this.indicatorSize
+                    this.lastX = this.x;
+                    this.lastY = this.y;
+                }
+                
+            },
 
             takePhoto() {
                 camera.takePicture({ width: 200, height: 200, keepAspectRatio: true, saveToGallery: false})
@@ -159,7 +221,7 @@
         height: 50;
         text-align: center;
     }
-    Image{
+    .photo{
         // height: 1400px;
         // margin: 0 10 100;
         width: 100%
@@ -188,19 +250,13 @@
     Label{
         margin-top: 20;
         text-align: center;
-        // color: red;
     }
     .color{
         background-color: blue;
     }
-    .notSelected{
-        // color: red;
-    }
     .selected{
         color: green
     }
-    TextField{
-        // height: 100
-    }
+
     
 </style>

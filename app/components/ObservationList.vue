@@ -17,6 +17,7 @@
 
 <script lang="ts">
 // import Observation from '@/components/Observation.vue'
+import test from '@/diagnose_request.ts'
 import BodyPartIndicator from '@/components/bodypartIndicator/BodyPartIndictor.vue'
 import Observation from '@/views/Observation.vue';
 export default {
@@ -71,12 +72,13 @@ export default {
 
         },
         onItemTap(event) {
-            this.$store.dispatch('setObservationId', {observation: event.item.id})
+            this.$store.dispatch('setCurrentObservation', {observation: event.item})
 
-            // console.log(event.index)
-            // console.log(event.item)
-            // alert(event.item.part)
+            // // console.log(event.index)
+            // // console.log(event.item)
+            // // alert(event.item.part)
             this.$navigateTo(Observation)
+            // test()
         },
         updateList(){
             this.observations = this.$store.getters.getObservations;
