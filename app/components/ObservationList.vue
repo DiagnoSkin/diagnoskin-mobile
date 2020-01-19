@@ -69,7 +69,7 @@ export default {
 
         },
         onItemTap(event) {
-            this.$store.dispatch('setObservationId', {observation: event.item.id})
+            this.$store.dispatch('setCurrentObservation', {observation: event.item})
             this.$navigateTo(Observation)
         },
         updateList(){
