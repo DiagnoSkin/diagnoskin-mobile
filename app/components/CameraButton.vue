@@ -43,16 +43,16 @@
        
         methods: {
             buttonClicked(){
-                action("Your message", "Cancel button text", ["Aparat", "Galeria"])
+                action("Select image source", "Cancel", ["Camera", "Gallery"])
                     .then(result => {
                         console.log(result);
-                        if(result === 'Aparat'){
+                        if(result === 'Camera'){
                             camera.takePicture({ width: 200, height: 200, keepAspectRatio: true, saveToGallery: false})
                                 .then( imageAsset => {
                                     imageSourceModule.fromAsset(imageAsset).then(
                                         savedImage => {
                                             console.log("saving to file");
-                                            let filename ="xdddd.jpg";
+                                            let filename =`xdd${new Date().getTime()}.jpg`;
                                             let folder = knownFolders.documents();
                                             let fullpath = path.join(folder.path, filename);
                                             savedImage.saveToFile(fullpath, "jpeg");
@@ -83,8 +83,8 @@
         background-repeat: no-repeat;
         background-position: center center;
         background-size: contain;
-        height: 150px;
-        width: 150px;
+        height: 125px;
+        width: 125px;
     }  
     .margin{
         margin: 50px;
