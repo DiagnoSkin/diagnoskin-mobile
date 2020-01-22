@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import { User } from 'nativescript-plugin-firebase';
 import firebase, { LoginOptions, CreateUserOptions } from 'nativescript-plugin-firebase';
-
+import App from '@/views/App.vue'
 
 Vue.use(Vuex);
 
@@ -41,40 +41,30 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    saveImage({commit, state}, payload){
+    async saveImage({commit, state}, payload){
       let nameDate = Date.now(),
-        db = firebase.firestore;
-      db.collection("users").doc(state.user.uid).collection("observations")
-      .add(
-        {
-          'date': nameDate,
-          'location': payload.part,
-          'nickname': payload.name,
-          'side' : payload.side,
-          'info': payload.info,
-          'photoPath': ``
+      db = firebase.firestore;
+      const result = await db.collection("users").doc(state.user.uid).collection("observations")
+        .add({
+            'date': nameDate,
+            'location': payload.part,
+            'nickname': payload.name,
+            'side' : payload.side,
+            'info': payload.info,
+            'photoPath': ``
+        })
+      const a = await firebase.storage.uploadFile({
+        remoteFullPath: `/${state.user.uid}/${result.id}/${nameDate}`,
+        localFullPath: payload.src,
+        onProgress: function(status) {
+          console.log("Uploaded fraction: " + status.fractionCompleted);
+          console.log("Percentage complete: " + status.percentageCompleted);
         }
-      ).then(result => {
-        firebase.storage
-        .uploadFile({
-          remoteFullPath: `/${state.user.uid}/${result.id}/${nameDate}`,
-          localFullPath: payload.src,
-          onProgress: function(status) {
-            console.log("Uploaded fraction: " + status.fractionCompleted);
-            console.log("Percentage complete: " + status.percentageCompleted);
-          }
-        })
-        .then(a => {
-          db.collection("users").doc(state.user.uid).collection("observations").doc(result.id).collection("photos").add(
-            {
-              'photoPath' : `/${state.user.uid}/${result.id}/${nameDate}.jpg`
-            }
-          ).then(r => {
-            alert('Form uploaded!')
-          })
-          
-        })
       })
+      const r = await db.collection("users").doc(state.user.uid).collection("observations").doc(result.id).collection("photos").add({
+          'photoPath' : `/${state.user.uid}/${result.id}/${nameDate}`,
+          'date': nameDate
+        })
     },
     saveAdditionalImage({commit, state}, payload){
       let nameDate = Date.now(),
@@ -82,7 +72,8 @@ export default new Vuex.Store({
       db.collection("users").doc(state.user.uid).collection("observations").doc(state.currentObservation.id).collection('photos')
       .add(
         {
-          'photoPath': `/${state.user.uid}/${state.currentObservation.id}/${nameDate}`
+          'photoPath': `/${state.user.uid}/${state.currentObservation.id}/${nameDate}`,
+          'date': nameDate
         }
       ).then(result => {
         firebase.storage
@@ -107,6 +98,7 @@ export default new Vuex.Store({
                   console.log("xddddddddddddddddddddd",change.doc.id)
                   let newObj = {
                     id: change.doc.id,
+                    nickname: change.doc.data().nickname,
                     date: change.doc.data().date,
                     part: change.doc.data().location
                   }
@@ -127,11 +119,12 @@ export default new Vuex.Store({
       const  q = await db.collection("users").doc(state.user.uid).collection("observations").doc(state.currentObservation.id).collection('photos').get()
       for(let index = 0; index < q.docs.length; index++){
         let path = q.docs[index].data().photoPath;
+        let date = q.docs[index].data().date
         let downloadedFile = await firebase.storage.getDownloadUrl({
           bucket: 'gs://diagnoskin-48e89.appspot.com/',
           remoteFullPath: path
         })
-        commit('ADD_OBSERVATION_PHOTO', downloadedFile)
+        commit('ADD_OBSERVATION_PHOTO', {downloadedFile, date})
       }
       // q.docs.forEach(doc => {
       //   let path = doc.data().photoPath;

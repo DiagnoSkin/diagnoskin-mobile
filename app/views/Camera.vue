@@ -24,8 +24,8 @@
           </TabContentItem>
           <TabContentItem>
             <StackLayout verticalAlignment="center">
-                <Button class="button-solid" @tap="selectPhoto">Select photo</Button>
-                <GridLayout rows="*" columns="*">
+                <Button class="button-solid smaller" @tap="selectPhoto">Select photo</Button>
+                <GridLayout rows="auto" columns="*">
                     <Image ref="imageSize" class="photo" :src="pictureSource ? pictureSource : '~/assets/camera/dummyImage.png'" row="0" col="0" />
                     <AbsoluteLayout row="0" col="0" @pinch="larger">
                       <Image v-if="pictureSource ? true : false" :style="getIndicatorSize"  src="~/assets/navigation/marker.png"  :top="y"   :left="x" @pan="move" />
@@ -34,17 +34,13 @@
             </StackLayout>
           </TabContentItem>
           <TabContentItem>
-            <StackLayout>
+            <StackLayout verticalAlignment="center">
                 <FlexboxLayout justifyContent="space-between">
-                    <!-- <Label class="bodyPartSum">Location : {{getName(bodyPart)}}</Label> -->
-                    <Image class="small bodyPartSum" :src="resultPictureSource ? resultPictureSource : '~/assets/camera/dummyImage.png'"/>
+                    <Label class="bodyPartSum">Location : {{getName(bodyPart)}}</Label>
+                    <Image class="small bodyPartSum" :src="pictureSource ? pictureSource : '~/assets/camera/dummyImage.png'"/>
                 </FlexboxLayout>
                 <TextField v-model="addidtionalInfo" hint="Provide additional info"/>
                 <TextField v-model="nameText" hint="Provide name"/>
-                <FlexboxLayout justifyContent="center">
-                    <Label text="notification" textWrap="true" />
-                    <Switch  />
-                </FlexboxLayout>
                 <Button class="button-solid" :enable="pictureSource" @tap="sendPhoto">Send Photo</Button>
             </StackLayout>
           </TabContentItem>
@@ -63,6 +59,7 @@ import { path, knownFolders } from "tns-core-modules/file-system";
 import { ImageSource, fromFile, fromAsset, fromBase64 } from 'tns-core-modules/image-source/image-source';
 import firebase from 'nativescript-plugin-firebase';
 import axios from 'axios';
+import ResponseView from '@/views/Response.vue'
 
 export default {
     name: 'Camera',
@@ -144,10 +141,10 @@ export default {
             
         },
         selectPhoto() {
-            action("Your message", "Cancel button text", ["Aparat", "Galeria"])
+            action("Select image source", "Cancel", ["Camera", "Gallery"])
                 .then(result => {
                     console.log(result);
-                    if(result === 'Aparat'){
+                    if(result === 'Camera'){
                         this.takePhoto()
                     } else {
                         this.selectFromGallery()
@@ -198,44 +195,47 @@ export default {
 
         },
         async sendPhoto() {
+            let radius = this.indicatorSize/2;
+            let objectToSend = {
+                imageSize : this.$refs.imageSize.nativeView.getActualSize(),
+                pictureSource : this.pictureSource,
+                radius : radius,
+                center : [this.lastX + radius, this.lastY + radius]
+            };
+            let objectToSave = {
+                src: this.pictureSource,
+                part: this.bodyPart,
+                name: this.nameText,
+                info: this.addidtionalInfo,
+                side: 'front'
+            };
             //TODO 
-            // if( this.bodyPart && this.pictureSource){
-            //     confirm('Are you sure you want to submit this form?')
-            //     .then(result => {
-            //         console.log(result)
-            //             this.$store.dispatch('saveImage', {src: this.pictureSource, part: this.bodyPart, name:this.nameText, info: this.addidtionalInfo, side: 'front'});
-            //     });
-            // }
-            // else {
-            //     alert('Photo or bodypart is not selected.')
-            // }
-            await this.sendPhotoToDiagnosis()
+            if( this.bodyPart && this.pictureSource){
+                confirm('Are you sure you want to submit this form?')
+                .then(result => {
+                    // console.log(result)
+                    // this.$store.dispatch('saveImage', {src: this.pictureSource, part: this.bodyPart, name:this.nameText, info: this.addidtionalInfo, side: 'front'});
+                    if(result){
+                        this.$navigateTo(ResponseView, {
+                            props: {
+                                objectToSave,
+                                objectToSend,
+                                buttons : true,
+                            },
+                            clearHistory: true 
+                        });
+                    }
+                    
+                });
+            }
+            else {
+                alert('Photo or Bodypart is not selected.')
+            }
+            
+
+            
         },
-        async sendPhotoToDiagnosis() {
-            const imageSize = this.$refs.imageSize.nativeView.getActualSize()
-            const backendUrl = 'https://diagnoskin-48e89.appspot.com/api/diagnosis';
-            const tokenResult = await firebase.getAuthToken({forceRefresh: true})
-            const img = await fromFile(this.pictureSource)
-            const radius = this.indicatorSize/2
-            const center = [this.lastX + radius, this.lastY + radius]
-            console.log(`Dupa radius:${radius}, center: ${center}, imageSize: ${imageSize.height} ${imageSize.width}`)
-            try {
-                const response = await axios.post(backendUrl,
-                    {
-                        center: center,
-                        radius: radius,
-                        refImageSize: [imageSize.width,imageSize.height],
-                        image: img.toBase64String('jpg')
-                    },
-                    { headers: { Authorization: `Bearer ${tokenResult.token}` }})
-                alert(`Response status: ${response.status}, Data: ${response.data.diagnosis}`)
-                const resultSource = fromBase64(response.data.result)
-                this.resultPictureSource = resultSource
-            }
-            catch(e) {
-                alert(`Error sending: ${e.message}`)
-            }
-        }
+        
     }
 }
 </script>
@@ -247,6 +247,9 @@ export default {
     }
     .small{
         width: 40%;
+    }
+    .smaller{
+        width: 70%;
     }
     .wrapper {
         width: 90%;

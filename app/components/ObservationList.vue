@@ -34,7 +34,11 @@ export default {
         }
     },
     created() {
-        this.observations = this.$store.getters.getObservations;
+        let data = this.$store.getters.getObservations;
+        data.sort((a, b) => {
+            return a.date - b.date
+        })
+        this.observations = data
         console.log(this.observations)
         this.buttonText = "xxddd" 
     },
